@@ -19,7 +19,9 @@ mainWord = MainWord()
 # 自己指定路径，
 # 为了适配wps不能转换doc的问题，这里限定：只能转换docx
 # @except_dec()
-def docx2pdf(path):
-    mainWord.docx2pdf(path)
+def docx2pdf(path, output_path):
+    mainWord.docx2pdf(path, output_path)
+
+
 def merge4docx(input_path, output_path, new_word_name):
     mainWord.merge4docx(input_path, output_path, new_word_name)

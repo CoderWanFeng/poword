@@ -1,50 +1,41 @@
 import os
+
+from pofile import get_files
+from poprogress import simple_progress
 from win32com.client import constants, gencache
 # import win32com.client as win32
 from pathlib import Path
 
+
 class MainWord():
 
-    def docx2pdf(self, path, docxSuffix=".docx"):
-        wordFiles = []
-        # 如果不存在，则不做处理
-        if not os.path.exists(path):
-            print("path does not exist path = " + path)
-            return
-        # 判断是否是文件
-        elif os.path.isfile(path):
-            print("path file type is file " + path)
-            wordFiles.append(path)
-        # 如果是目录，则遍历目录下面的文件
-        elif os.path.isdir(path):
-            print(os.listdir(path))
-            # 填充路径，补充完整路径
-            if not path.endswith("/") or not path.endswith("\\"):
-                path = path + "/"
-            for file in os.listdir(path):
-                if file.endswith(docxSuffix):
-                    wordFiles.append(path + file)
-        print(wordFiles)
-        for file in wordFiles:
-            filepath = os.path.abspath(file)
-            index = filepath.rindex('.')
-            pdfPath = os.path.abspath(filepath[:index] + '.pdf')
-            print(pdfPath)
-            self.createpdf(filepath, pdfPath)
+    def docx2pdf(self, path, output_path, docxSuffix=".docx", pdfSuffix='.pdf'):
+        waiting_covert_docx_files = get_files(path, name=docxSuffix)
+        if waiting_covert_docx_files:
+            print(f'一共有{len(waiting_covert_docx_files)}个docx文件')
+            for i, docx_file in simple_progress(enumerate(waiting_covert_docx_files)):
+                abs_output_path = Path(output_path).absolute()
+                if not abs_output_path.exists():
+                    abs_output_path.mkdir()
+                abs_single_docx_path = Path(docx_file).absolute()
+                print(f'正在转换的是第 {str(i + 1)} 个，文档名字是： {abs_single_docx_path}')
+                abs_pdf_path = abs_output_path / (abs_single_docx_path.stem + pdfSuffix)
+                self.createpdf(str(abs_single_docx_path), str(abs_pdf_path))
 
     def createpdf(self, wordPath, pdfPath):
-        word = gencache.EnsureDispatch('Word.Application')
-        doc = word.Documents.Open(wordPath, ReadOnly=1)
+        word_app = gencache.EnsureDispatch('Word.Application')
+        word_app.Visible = False  # 是否可视化
+        doc = word_app.Documents.Open(wordPath, ReadOnly=1)
         # 转换方法
         doc.ExportAsFixedFormat(pdfPath, constants.wdExportFormatPDF)
-        word.Quit()
+        # word_app.Quit() #不注释，不能批量转换，必须注释
 
     def merge4docx(self, input_path, output_path, new_word_name):
         abs_input_path = Path(input_path).absolute()  # 相对路径→绝对路径
         abs_output_path = Path(output_path).absolute()  # 相对路径→绝对路径
         save_path = abs_output_path / new_word_name
         print('-' * 10 + '开始合并!' + '-' * 10)
-        word_app = gencache.EnsureDispatch('Word.Application')   # 打开word程序
+        word_app = gencache.EnsureDispatch('Word.Application')  # 打开word程序
         word_app.Visible = False  # 是否可视化
         folder = Path(abs_input_path)
         waiting_files = [path for path in folder.iterdir()]
