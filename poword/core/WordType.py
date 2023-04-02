@@ -1,9 +1,9 @@
 import os
+import shutil
 
 from pofile import get_files
 from poprogress import simple_progress
 from win32com.client import constants, gencache
-# import win32com.client as win32
 from pathlib import Path
 
 
@@ -45,3 +45,45 @@ class MainWord():
         output_file.SaveAs(str(save_path))  # 保存
         output_file.Close()
         print('-' * 10 + '合并完成!' + '-' * 10)
+
+    def doc2docx(self, input_path, output_path, docSuffix='.doc', type_id=16):
+        """
+        doc转docx
+        :param input_path:
+        :param output_path:
+        :param docSuffix:
+        :param type_id:
+        :return:
+        """
+        self.convert4word(type_id, input_path, output_path, docSuffix)
+
+    def docx2doc(self, input_path, output_path='./', docSuffix='.docx', type_id=0):
+        """
+        docx转doc
+        :param input_path:
+        :param output_path:
+        :param docSuffix:
+        :param type_id:
+        :return:
+        """
+        self.convert4word(type_id, input_path, output_path, docSuffix)
+
+    def convert4word(self, type_id, input_path, output_path, docSuffix):
+        """
+
+        :param type_id: 16-docx,0-doc
+        :return:
+        """
+        abs_input_path = Path(input_path).absolute()
+        abs_output_path = str(Path(output_path).absolute())
+        word_file_list = get_files(abs_input_path, suffix=docSuffix)
+        for word_file in simple_progress(word_file_list):
+            # self.convert4word(type_id, abs_input_path, abs_output_path)
+            word_app = gencache.EnsureDispatch('Word.Application')  # 打开word程序
+            word_app.Visible = False  # 是否可视化
+            # 源文件
+            doc = word_app.Documents.Open(str(word_file), ReadOnly=1)
+            # 生成的新文件
+            doc.SaveAs(os.path.join(abs_output_path, Path(word_file).stem), type_id)
+            doc.Close()
+        # word.Quit()

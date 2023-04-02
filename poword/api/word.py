@@ -25,3 +25,11 @@ def docx2pdf(path, output_path):
 
 def merge4docx(input_path, output_path, new_word_name):
     mainWord.merge4docx(input_path, output_path, new_word_name)
+
+
+def doc2docx(input_path, output_path):
+    mainWord.doc2docx(input_path, output_path)
+
+
+def docx2doc(input_path, output_path):
+    mainWord.docx2doc(input_path, output_path)
