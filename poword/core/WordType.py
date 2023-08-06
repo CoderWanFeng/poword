@@ -1,20 +1,23 @@
 import os
-import shutil
+from pathlib import Path
 
-from pofile import get_files
+from pofile import get_files, mkdir
 from poprogress import simple_progress
 from win32com.client import constants, gencache
-from pathlib import Path
 
 
 class MainWord():
 
+    def __init__(self):
+        self.app = 'Word.Application'
+
     def docx2pdf(self, path, output_path, docxSuffix=".docx", pdfSuffix='.pdf'):
-        waiting_covert_docx_files = get_files(path, name=docxSuffix)
+        waiting_covert_docx_files = get_files(path, suffix=docxSuffix)
         if waiting_covert_docx_files:
             print(f'一共有{len(waiting_covert_docx_files)}个docx文件')
             for i, docx_file in simple_progress(enumerate(waiting_covert_docx_files)):
                 abs_output_path = Path(output_path).absolute()
+                mkdir(abs_output_path)
                 if not abs_output_path.exists():
                     abs_output_path.mkdir()
                 abs_single_docx_path = Path(docx_file).absolute()
@@ -23,7 +26,7 @@ class MainWord():
                 self.createpdf(str(abs_single_docx_path), str(abs_pdf_path))
 
     def createpdf(self, wordPath, pdfPath):
-        word_app = gencache.EnsureDispatch('Word.Application')
+        word_app = gencache.EnsureDispatch(self.app)
         word_app.Visible = False  # 是否可视化
         doc = word_app.Documents.Open(wordPath, ReadOnly=1)
         # 转换方法
@@ -35,7 +38,7 @@ class MainWord():
         abs_output_path = Path(output_path).absolute()  # 相对路径→绝对路径
         save_path = abs_output_path / new_word_name
         print('-' * 10 + '开始合并!' + '-' * 10)
-        word_app = gencache.EnsureDispatch('Word.Application')  # 打开word程序
+        word_app = gencache.EnsureDispatch(self.app)  # 打开word程序
         word_app.Visible = False  # 是否可视化
         folder = Path(abs_input_path)
         waiting_files = [path for path in folder.iterdir()]
@@ -75,15 +78,17 @@ class MainWord():
         :return:
         """
         abs_input_path = Path(input_path).absolute()
-        abs_output_path = str(Path(output_path).absolute())
+        exsit, abs_output_path = mkdir(output_path)
         word_file_list = get_files(abs_input_path, suffix=docSuffix)
+        out_suffix = '.doc' if type_id == 0 else '.docx'
         for word_file in simple_progress(word_file_list):
             # self.convert4word(type_id, abs_input_path, abs_output_path)
-            word_app = gencache.EnsureDispatch('Word.Application')  # 打开word程序
+            word_app = gencache.EnsureDispatch(self.app)  # 打开word程序
             word_app.Visible = False  # 是否可视化
             # 源文件
             doc = word_app.Documents.Open(str(word_file), ReadOnly=1)
             # 生成的新文件
-            doc.SaveAs(os.path.join(abs_output_path, Path(word_file).stem), type_id)
+            output_word_name = os.path.join(abs_output_path, Path(word_file).stem) + out_suffix
+            doc.SaveAs(output_word_name, type_id)
             doc.Close()
         # word.Quit()
