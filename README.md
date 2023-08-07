@@ -69,11 +69,12 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ poword -U
 
 全部功能的说明
 
-| 方法名 | 功能 | 视频（文档） | 演示代码 |
-| ----------------- | ------------------- | --------------------------------------------------- | ------------------------------- |
-| merge4docx |合并Word文档 | [视频](https://www.bilibili.com/video/BV1Vo4y1q7i3) | [源码](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/%E5%90%88%E5%B9%B6word.py)             |
-| docx2doc/doc2docx |doc和docx，互相转换 | [视频](https://www.bilibili.com/video/BV1so4y1H7rj) | [源码](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/doc%E5%92%8Cdocx%E4%BA%92%E8%BD%AC.py) |
-| docx2pdf | word 转pdf | [视频](https://www.bilibili.com/video/BV1pT4y1k7FH) | [源码](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/word%E8%BD%ACPDF.py)                   |
+
+ | 序号 | 方法名            | 功能                | 视频（文档）                                        | 演示代码                                                                                                            |
+ | ---- | ----------------- | ------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+ | 1    | merge4docx        | 合并Word文档        | [视频](https://www.bilibili.com/video/BV1Vo4y1q7i3) | [源码](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/%E5%90%88%E5%B9%B6word.py)             |
+ | 2    | docx2doc/doc2docx | doc和docx，互相转换 | [视频](https://www.bilibili.com/video/BV1so4y1H7rj) | [源码](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/doc%E5%92%8Cdocx%E4%BA%92%E8%BD%AC.py) |
+ | 3    | docx2pdf          | word 转 pdf         | [视频](https://www.bilibili.com/video/BV1pT4y1k7FH) | [源码](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/word%E8%BD%ACPDF.py)                   |
 
 ## 🛠️包含组件
 
