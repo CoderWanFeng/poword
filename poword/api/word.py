@@ -33,3 +33,7 @@ def doc2docx(input_path, output_path):
 
 def docx2doc(input_path, output_path):
     mainWord.docx2doc(input_path, output_path)
+
+
+def docx4imgs(word_path, img_path):
+    mainWord.docx4imgs(word_path, img_path)

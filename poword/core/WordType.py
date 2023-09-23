@@ -1,6 +1,8 @@
 import os
+from os.path import basename, join
 from pathlib import Path
 
+from docx import ImagePart, Document
 from pofile import get_files, mkdir
 from poprogress import simple_progress
 from win32com.client import constants, gencache
@@ -92,3 +94,23 @@ class MainWord():
             doc.SaveAs(output_word_name, type_id)
             doc.Close()
         # word.Quit()
+
+    def docx4imgs(self, word_path, img_path):
+        """
+        从wotd里，提取图片
+        :param word_path:
+        :param img_path:
+        :return:
+        """
+        doc_obj = Document(word_path)
+        for p in doc_obj.paragraphs:  # 遍历所有堕落
+            for image in p._element.xpath('.//pic:pic'):  # 提取图片的标签pic
+                for image_id in image.xpath('.//a:blip/@r:embed'):  # 获取id
+                    img_part = doc_obj.part.related_parts[image_id]  # 进一步得到part
+                    if not isinstance(img_part, ImagePart):
+                        continue
+                    output_dir = Path(img_path) / Path(word_path).stem
+                    mkdir(output_dir)
+                    save_path = join(output_dir, basename(img_part.partname))  # 获取默认文件名image1
+                    with open(save_path, "wb") as img_file:
+                        img_file.write(img_part.blob)
