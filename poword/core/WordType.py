@@ -38,6 +38,7 @@ class MainWord():
     def merge4docx(self, input_path, output_path, new_word_name):
         abs_input_path = Path(input_path).absolute()  # 相对路径→绝对路径
         abs_output_path = Path(output_path).absolute()  # 相对路径→绝对路径
+        mkdir(abs_output_path)
         save_path = abs_output_path / new_word_name
         print('-' * 10 + '开始合并!' + '-' * 10)
         word_app = gencache.EnsureDispatch(self.app)  # 打开word程序
