@@ -99,19 +99,19 @@ class MainWord():
     def docx4imgs(self, word_path, img_path):
         """
         从wotd里，提取图片
+        :author Wang Peng
         :param word_path:
         :param img_path:
         :return:
         """
         doc_obj = Document(word_path)
-        for p in doc_obj.paragraphs:  # 遍历所有堕落
-            for image in p._element.xpath('.//pic:pic'):  # 提取图片的标签pic
-                for image_id in image.xpath('.//a:blip/@r:embed'):  # 获取id
-                    img_part = doc_obj.part.related_parts[image_id]  # 进一步得到part
-                    if not isinstance(img_part, ImagePart):
-                        continue
-                    output_dir = Path(img_path) / Path(word_path).stem
-                    mkdir(output_dir)
-                    save_path = join(output_dir, basename(img_part.partname))  # 获取默认文件名image1
-                    with open(save_path, "wb") as img_file:
-                        img_file.write(img_part.blob)
+        for rel in doc_obj.part.rels.values():  # 遍历文档中的所有关联对象
+            if "image" in rel.reltype:  # 找到关联类型为图片的对象
+                img_part = rel.target_part
+                if not isinstance(img_part, ImagePart):
+                    continue
+                output_dir = Path(img_path) / Path(word_path).stem
+                mkdir(output_dir)
+                save_path = join(output_dir, basename(img_part.partname))  # 获取默认文件名image1
+                with open(save_path, "wb") as img_file:
+                    img_file.write(img_part.blob)
