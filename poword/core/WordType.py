@@ -5,6 +5,7 @@ from pathlib import Path
 from docx import ImagePart, Document
 from pofile import get_files, mkdir
 from poprogress import simple_progress
+from win32com import client
 from win32com.client import constants, gencache
 
 
@@ -41,7 +42,7 @@ class MainWord():
         mkdir(abs_output_path)
         save_path = abs_output_path / new_word_name
         print('-' * 10 + '开始合并!' + '-' * 10)
-        word_app = gencache.EnsureDispatch(self.app)  # 打开word程序
+        word_app = client.Dispatch(self.app)  # 打开word程序
         word_app.Visible = False  # 是否可视化
         folder = Path(abs_input_path)
         waiting_files = [path for path in folder.iterdir()]
