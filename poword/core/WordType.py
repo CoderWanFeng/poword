@@ -53,7 +53,7 @@ class MainWord():
         output_file.Close()
         print('-' * 10 + '合并完成!' + '-' * 10)
 
-    def doc2docx(self, input_path, output_path, docSuffix='.doc', type_id=16):
+    def doc2docx(self, input_path, output_path, output_name=None, docSuffix='.doc', type_id=16):
         """
         doc转docx
         :param input_path:
@@ -62,9 +62,9 @@ class MainWord():
         :param type_id:
         :return:
         """
-        self.convert4word(type_id, input_path, output_path, docSuffix)
+        self.convert4word(type_id, input_path, output_path, docSuffix, output_name)
 
-    def docx2doc(self, input_path, output_path='./', docSuffix='.docx', type_id=0):
+    def docx2doc(self, input_path, output_path='./', output_name=None, docSuffix='.docx', type_id=0):
         """
         docx转doc
         :param input_path:
@@ -73,9 +73,9 @@ class MainWord():
         :param type_id:
         :return:
         """
-        self.convert4word(type_id, input_path, output_path, docSuffix)
+        self.convert4word(type_id, input_path, output_path, docSuffix, output_name)
 
-    def convert4word(self, type_id, input_path, output_path, docSuffix):
+    def convert4word(self, type_id, input_path, output_path, docSuffix, output_name):
         """
 
         :param type_id: 16-docx,0-doc
@@ -92,7 +92,9 @@ class MainWord():
             # 源文件
             doc = word_app.Documents.Open(str(word_file), ReadOnly=1)
             # 生成的新文件
-            output_word_name = os.path.join(abs_output_path, Path(word_file).stem) + out_suffix
+            output_file_name = Path(output_name).stem if output_name else Path(word_file).stem
+
+            output_word_name = os.path.join(abs_output_path, output_file_name) + out_suffix
             doc.SaveAs(output_word_name, type_id)
             doc.Close()
         # word.Quit()

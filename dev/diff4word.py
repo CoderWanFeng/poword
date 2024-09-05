@@ -1,43 +1,26 @@
 # -*- coding: UTF-8 -*-
 '''
 @作者 ：B站/抖音/微博/小红书/公众号，都叫：程序员晚枫
-@微信 ：CoderWanFeng : https://mp.weixin.qq.com/s/B1V6KeXc7IOEB8DgXLWv3g
+@微信 ：CoderWanFeng : https://mp.weixin.qq.com/s/8x7c9qiAneTsDJq9JnWLgA
 @个人网站 ：www.python-office.com
 @Date    ：2023/4/2 1:41 
 @Description     ：https://juejin.cn/post/6899035340095520775
 '''
 
-# 两个 Word 文档的对比也是工作中比较常见的需求了
-#
-# 首先，遍历文档中所有段落，过滤掉空行，获取所有文本内容
+from spire.doc import *
+from spire.doc.common import *
 
-# 分别获取段落内容
-content1 = ''
-content2 = ''
-file1 = ''
-file2 = ''
-for paragraph in file1.paragraphs:
-    if "" == paragraph.text.strip():
-        continue
-    content1 += paragraph.text + '\n'
+# 加载Word文档
+document = Document()
+document.LoadFromFile("fdadd.docx")
 
-for paragraph in file2.paragraphs:
-    if "" == paragraph.text.strip():
-        continue
-    content2 += paragraph.text + '\n'
+# 遍历所有页面
+for i in range(document.GetPageCount()):
+    # 转换指定页面为图片流
+    imageStream = document.SaveImageToStreams(i, ImageType.Bitmap)
+    # 保存为.png图片（也可以保存为jpg或bmp等图片格式）
+    with open("图片\\图-{0}.png".format(i), 'wb') as imageFile:
+        imageFile.write(imageStream.ToArray())
 
-# 如果参数 keepends 为 False，不包含换行符，如果为 True，则保留换行符。
-print("第二个文档数据如下：\n", content1.splitlines(keepends=False))
-print("第一个文档数据如下：\n", content1.splitlines(keepends=False))
-
-# 接着，使用 Python 中的标准依赖库 difflib 对比文字间的差异，最后生成 HTML 差异报告
-
-import codecs
-from difflib import HtmlDiff
-
-# 差异内容
-diff_html = HtmlDiff(wrapcolumn=100).make_file(content1.split("\n"), content2.split("\n"))
-
-# 写入到文件中
-with codecs.open('./diff_result.html', 'w', encoding='utf-8') as f:
-     f.write(diff_html)
+# 关闭文档
+document.Close()
