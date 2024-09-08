@@ -27,12 +27,12 @@ def merge4docx(input_path, output_path, new_word_name):
     mainWord.merge4docx(input_path, output_path, new_word_name)
 
 
-def doc2docx(input_path, output_path,output_name):
-    mainWord.doc2docx(input_path, output_path,output_name)
+def doc2docx(input_path, output_path, output_name):
+    mainWord.doc2docx(input_path, output_path, output_name)
 
 
-def docx2doc(input_path, output_path):
-    mainWord.docx2doc(input_path, output_path)
+def docx2doc(input_path, output_path, output_name):
+    mainWord.docx2doc(input_path, output_path, output_name)
 
 
 def docx4imgs(word_path, img_path):

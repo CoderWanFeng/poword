@@ -31,17 +31,16 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ poword -U
 
 已有功能的说明如下：
 
-
-
- | 序号 | 方法名            | 功能                | 视频                                                | 文档                                                      | 演示代码                                                                                                            |
- | ---- | ----------------- | ------------------- | --------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
- | 1    | merge4docx        | 合并Word文档        | [播放](https://www.bilibili.com/video/BV1Vo4y1q7i3) | [查看](https://mp.weixin.qq.com/s/PjQJ3s4Arr872NDfcr-7YA) | [打开](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/%E5%90%88%E5%B9%B6word.py)             |
- | 2    | docx2doc/doc2docx | doc和docx，互相转换 | [播放](https://www.bilibili.com/video/BV1so4y1H7rj) | [查看](https://mp.weixin.qq.com/s/nyg_LlkHPwx1AY7wCg5KTw) | [打开](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/doc%E5%92%8Cdocx%E4%BA%92%E8%BD%AC.py) |
- | 3    | docx2pdf          | word 转 pdf         | [播放](https://www.bilibili.com/video/BV1pT4y1k7FH) | [查看](https://mp.weixin.qq.com/s/Kfmu8vCSr6otGfrf7mj0bA) | [打开](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/word%E8%BD%ACPDF.py)                   |
+| 序号 | 方法名               | 功能            | 视频                                                 | 文档                                                      | 演示代码                                                                                                              |
+ |----|-------------------|---------------|----------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| 1  | merge4docx        | 合并Word文档      | [播放](https://www.bilibili.com/video/BV18H4y1m7bC)  | [查看](https://mp.weixin.qq.com/s/PjQJ3s4Arr872NDfcr-7YA) | [打开](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/%E5%90%88%E5%B9%B6word.py)             |
+| 2  | docx2doc/doc2docx | doc和docx，互相转换 | [播放](https://www.bilibili.com/video/BV1bH4y1Z7jc/) | [查看](https://mp.weixin.qq.com/s/nyg_LlkHPwx1AY7wCg5KTw) | [打开](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/doc%E5%92%8Cdocx%E4%BA%92%E8%BD%AC.py) |
+| 3  | docx2pdf          | word 转 pdf    | [播放](https://www.bilibili.com/video/BV1K84y1Z7n6)  | [查看](https://mp.weixin.qq.com/s/Kfmu8vCSr6otGfrf7mj0bA) | [打开](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/word%E8%BD%ACPDF.py)                   |
+| 4  | docx4imgs         | 从word里提取图片    |                                                    | [查看](https://mp.weixin.qq.com/s/EIhbT3N5RlWJblCxuoDBwg) | [打开](https://github.com/CoderWanFeng/python-office/blob/master/demo/poword/word%E8%BD%ACPDF.py)                   |
 
 ## 🏗️添砖加瓦
 
-本项目欢迎任何人参与开发，如果是小白，可以看一下开发教程👉[如何参与开源项目？0基础入门：怎么打开GitHub？什么是issue？什么是PR？](https://www.bilibili.com/video/BV1EP411d7Np/?spm_id_from=333.999.0.0)
+本项目欢迎任何人参与开发，如果是小白，可以看一下开发教程👉[如何参与开源项目？0基础入门：怎么打开GitHub？什么是issue？什么是PR？](https://www.bilibili.com/video/BV1EP411d7Np)
 
 ### 🐞提供bug反馈或建议
 
@@ -49,6 +48,7 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ poword -U
 
 - [Github issue](https://github.com/CoderWanFeng/poword/issues)
 - [gitee issue](https://gitee.com/CoderWanFeng/poword/issues)
+
 ### 🧬贡献代码的步骤
 
 1. 在Gitee或者Github上fork项目到自己的repo
