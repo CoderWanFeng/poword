@@ -2,7 +2,7 @@
 	👉 <a target="_blank" href="https://www.python-office.com/">项目官网：https://www.python-office.com/</a> 👈
 </p>
 <p align="center">
-	👉 <a target="_blank" href="https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/python-office.jpg">本开源项目的交流群</a> 👈
+	👉 <a target="_blank" href="https://www.python4office.cn/wechat-group/">本开源项目的交流群</a> 👈
 </p>
 
 
@@ -56,15 +56,15 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ poword -U
 3. 修改代码
 4. commit后push到自己的库
 5. 登录Gitee或Github在你首页可以看到一个 pull request 按钮，点击它，填写一些说明信息，然后提交到master分支即可。
-6. 等待程序员晚枫合并，＋微信说一声更好👉[CoderWanFeng](http://python4office.cn/wechat-qrcode/)
+6. 等待程序员晚枫合并，＋微信说一声更好👉[python-office](https://www.python4office.cn/wechat-qrcode/)
 
 -------------------------------------------------------------------------------
 
 ## 📌联系作者
 
 <p align="center" id='开源交流群-banner'>
-<a target="_blank" href='https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/python-office.jpg'>
-<img src="https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/python-office-qr.jpg" width="100%"/>
+<a target="_blank" href='https://cos.python-office.com/group%2Ffree-group.jpg'>
+<img src="https://cos.python-office.com/group/python-office-qr.jpg" width="100%"/>
 </a> 
 </p>
 
@@ -73,7 +73,7 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ poword -U
 几个没有套路的福利，每天都可以领一次~
 
 <p align="center" id='福利合集-banner'>
-    <a target="_blank" href='http://python4office.cn/sideline-pro-list/'>
-    <img src="https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/fuli.jpg" width="100%"/>
+    <a target="_blank" href='https://www.python4office.cn/sideline-pro-list/'>
+    <img src="https://cos.python-office.com/ads/fuli/all-1.jpg" width="100%"/>
     </a>   
 </p>
