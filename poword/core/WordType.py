@@ -70,8 +70,12 @@ class MainWord():
         word_app.Visible = False
         # 打开Word文档，设置为只读模式
         doc = word_app.Documents.Open(wordPath, ReadOnly=1)
-        # 将Word文档导出为PDF格式
-        doc.ExportAsFixedFormat(pdfPath, constants.wdExportFormatPDF)
+        try:
+            # 将Word文档导出为PDF格式
+            doc.ExportAsFixedFormat(pdfPath, constants.wdExportFormatPDF)
+        finally:
+            # 无论导出是否成功，都关闭文档并释放源文件占用
+            doc.Close(False)
         # 下面的代码如果取消注释，每次转换后Word将关闭，不适用于批量转换
         # word_app.Quit()
     def merge4docx(self, input_path, output_path, new_word_name):
