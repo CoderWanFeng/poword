@@ -127,7 +127,8 @@ class MainWord():
         # 打印合并完成的标志信息
         print('-' * 10 + '合并完成!' + '-' * 10)
 
-    def doc2docx(self, input_path, output_path, output_name=None, docSuffix='.docx', type_id=16):
+    def doc2docx(self, input_path, output_path, output_name=None, docSuffix='.docx', type_id=16,
+                 show_progress=True):
         """
         将doc文件转换为docx文件
         :param input_path: 输入文件的路径
@@ -135,10 +136,11 @@ class MainWord():
         :param output_name: (可选) 输出文件的名称
         :param docSuffix: (可选) 输入文件的后缀，默认为'.doc'
         :param type_id: (可选) 文件类型ID，用于识别文件格式，默认为16，代表存为.docx文件
+        :param show_progress: (可选) 是否显示转换进度条，默认为True
         :return: 无返回值
         """
         # 调用convert4word方法进行文件格式转换
-        self._convert4word(type_id, input_path, output_path, docSuffix, output_name)
+        self._convert4word(type_id, input_path, output_path, docSuffix, output_name, show_progress)
 
     def docx2doc(self, input_path, output_path='./', output_name=None, docSuffix='.doc', type_id=0):
         """
@@ -154,17 +156,20 @@ class MainWord():
         # 调用convert4word方法实现docx到doc的格式转换
         self._convert4word(type_id, input_path, output_path, docSuffix, output_name)
 
-    def _convert4word(self, type_id, input_path, output_path, docSuffix, output_name):
+    def _convert4word(self, type_id, input_path, output_path, docSuffix, output_name,
+                      show_progress=True):
         """
 
         :param type_id: 16-docx,0-doc
+        :param show_progress: 是否显示转换进度条
         :return:
         """
         abs_input_path = Path(input_path).absolute()
         exsit, abs_output_path = mkdir(output_path)
         word_file_list = get_files(abs_input_path, suffix=docSuffix)
         out_suffix = '.doc' if type_id == 0 else '.docx'
-        for word_file in simple_progress(word_file_list):
+        files_to_convert = simple_progress(word_file_list) if show_progress else word_file_list
+        for word_file in files_to_convert:
             # self.convert4word(type_id, abs_input_path, abs_output_path)
             word_app = gencache.EnsureDispatch(self.app)  # 打开word程序
             word_app.Visible = False  # 是否可视化
