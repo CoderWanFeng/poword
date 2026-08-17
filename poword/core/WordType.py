@@ -1,4 +1,6 @@
+import hashlib
 import os
+import sys
 from os.path import basename, join
 from pathlib import Path
 
@@ -34,6 +36,8 @@ class MainWord():
         if waiting_covert_docx_files:
             print(f'一共有{len(waiting_covert_docx_files)}个docx文件')
 
+            word_app = gencache.EnsureDispatch(self.app)
+            word_app.Visible = False
             # 遍历每个docx文件并转换为pdf
             for i, docx_file in simple_progress(enumerate(waiting_covert_docx_files)):
                 # 获取输出目录的绝对路径
@@ -52,7 +56,8 @@ class MainWord():
                 abs_pdf_path = abs_output_path / (abs_single_docx_path.stem + pdfSuffix)
 
                 # 调用方法将docx文件转换为pdf文件
-                self.createpdf(str(abs_single_docx_path), str(abs_pdf_path))
+                self._createpdf(word_app, str(abs_single_docx_path), str(abs_pdf_path))
+
     def createpdf(self, wordPath, pdfPath):
         """
         将Word文档转换为PDF格式文件。
@@ -64,20 +69,26 @@ class MainWord():
         说明:
         本函数通过调用Word应用程序接口将Word文档转换为PDF文件，适用于需要将Word格式文档转换为不可编辑的PDF格式的场景。
         """
-        # 确保Word应用程序对象可用
         word_app = gencache.EnsureDispatch(self.app)
-        # 设置Word应用程序不可视化运行
         word_app.Visible = False
-        # 打开Word文档，设置为只读模式
-        doc = word_app.Documents.Open(wordPath, ReadOnly=1)
+        self._createpdf(word_app, wordPath, pdfPath)
+
+    def _createpdf(self, word_app, word_path, pdf_path):
+        doc = word_app.Documents.Open(word_path, ReadOnly=1)
         try:
-            # 将Word文档导出为PDF格式
-            doc.ExportAsFixedFormat(pdfPath, constants.wdExportFormatPDF)
+            doc.ExportAsFixedFormat(pdf_path, constants.wdExportFormatPDF)
         finally:
-            # 无论导出是否成功，都关闭文档并释放源文件占用
+            self._close_document(doc)
+
+    @staticmethod
+    def _close_document(doc):
+        has_original_error = sys.exc_info()[0] is not None
+        try:
             doc.Close(False)
-        # 下面的代码如果取消注释，每次转换后Word将关闭，不适用于批量转换
-        # word_app.Quit()
+        except Exception:
+            if not has_original_error:
+                raise
+
     def merge4docx(self, input_path, output_path, new_word_name):
         """
         合并同一目录下的所有docx文件到一个新文档中。
@@ -102,32 +113,42 @@ class MainWord():
         # 打印合并开始的标志信息
         print('-' * 10 + '开始合并!' + '-' * 10)
 
-        # 打开Word应用程序
-        word_app = client.Dispatch(self.app)
-        # 设置Word应用程序不可视化
-        word_app.Visible = False
-
-        # 获取输入目录下的所有文件路径
+        # 获取输入目录下的所有docx文件路径
         folder = Path(abs_input_path)
-        waiting_files = [path for path in folder.iterdir()]
+        save_path_key = os.path.normcase(str(save_path.resolve()))
+        waiting_files = sorted(
+            (
+                path for path in folder.iterdir()
+                if path.is_file()
+                and path.suffix.lower() == '.docx'
+                and not path.name.startswith('~$')
+                and os.path.normcase(str(path.resolve())) != save_path_key
+            ),
+            key=lambda path: os.path.normcase(str(path.resolve())),
+        )
 
+        if not waiting_files:
+            print('-' * 10 + '合并完成!' + '-' * 10)
+            return
+
+        word_app = client.Dispatch(self.app)
+        word_app.Visible = False
         # 新建一个Word文档，用于保存合并后的文件
         output_file = word_app.Documents.Add()
+        try:
+            # 遍历所有文件，逐个将文件内容插入到新建的Word文档中
+            for single_file in waiting_files:
+                output_file.Application.Selection.InsertFile(str(single_file))
 
-        # 遍历所有文件，逐个将文件内容插入到新建的Word文档中
-        for single_file in waiting_files:
-            output_file.Application.Selection.InsertFile(str(single_file))
-
-        # 保存合并后的文档
-        output_file.SaveAs(str(save_path))
-
-        # 关闭合并后的文档
-        output_file.Close()
+            # 保存合并后的文档
+            output_file.SaveAs(str(save_path))
+        finally:
+            self._close_document(output_file)
 
         # 打印合并完成的标志信息
         print('-' * 10 + '合并完成!' + '-' * 10)
 
-    def doc2docx(self, input_path, output_path, output_name=None, docSuffix='.docx', type_id=16,
+    def doc2docx(self, input_path, output_path, output_name=None, docSuffix='.doc', type_id=16,
                  show_progress=True):
         """
         将doc文件转换为docx文件
@@ -142,7 +163,7 @@ class MainWord():
         # 调用convert4word方法进行文件格式转换
         self._convert4word(type_id, input_path, output_path, docSuffix, output_name, show_progress)
 
-    def docx2doc(self, input_path, output_path='./', output_name=None, docSuffix='.doc', type_id=0):
+    def docx2doc(self, input_path, output_path='./', output_name=None, docSuffix='.docx', type_id=0):
         """
         将docx格式文件转换为doc格式文件。
 
@@ -166,22 +187,26 @@ class MainWord():
         """
         abs_input_path = Path(input_path).absolute()
         exsit, abs_output_path = mkdir(output_path)
-        word_file_list = get_files(abs_input_path, suffix=docSuffix)
+        word_file_list = list(get_files(abs_input_path, suffix=docSuffix))
         out_suffix = '.doc' if type_id == 0 else '.docx'
         files_to_convert = simple_progress(word_file_list) if show_progress else word_file_list
-        for word_file in files_to_convert:
-            # self.convert4word(type_id, abs_input_path, abs_output_path)
-            word_app = gencache.EnsureDispatch(self.app)  # 打开word程序
-            word_app.Visible = False  # 是否可视化
-            # 源文件
-            doc = word_app.Documents.Open(str(word_file), ReadOnly=1)
-            # 生成的新文件
-            output_file_name = Path(output_name).stem if output_name else Path(word_file).stem
+        if not word_file_list:
+            return
 
-            output_word_name = os.path.join(abs_output_path, output_file_name) + out_suffix
-            doc.SaveAs(output_word_name, type_id)
-            doc.Close()
-        # word.Quit()
+        word_app = gencache.EnsureDispatch(self.app)
+        word_app.Visible = False
+        for word_file in files_to_convert:
+            doc = word_app.Documents.Open(str(word_file), ReadOnly=1)
+            try:
+                output_file_name = (
+                    Path(output_name).stem
+                    if output_name and len(word_file_list) == 1
+                    else Path(word_file).stem
+                )
+                output_word_name = os.path.join(abs_output_path, output_file_name) + out_suffix
+                doc.SaveAs(output_word_name, type_id)
+            finally:
+                self._close_document(doc)
 
     def docx4imgs(self, word_path, img_path):
         """
@@ -197,13 +222,34 @@ class MainWord():
         :return: 该方法没有返回值，但会在指定的目录下生成提取的图片文件。
         """
         doc_obj = Document(word_path)
-        for rel in doc_obj.part.rels.values():  # 遍历文档中的所有关联对象
-            if "image" in rel.reltype:  # 找到关联类型为图片的对象
+        images = []
+        for rel in doc_obj.part.rels.values():
+            if "image" in rel.reltype:
                 img_part = rel.target_part
-                if not isinstance(img_part, ImagePart):
-                    continue
-                output_dir = Path(img_path) / Path(word_path).stem
-                mkdir(output_dir)
-                save_path = join(output_dir, basename(img_part.partname))  # 获取默认文件名image1
-                with open(save_path, "wb") as img_file:
-                    img_file.write(img_part.blob)
+                if isinstance(img_part, ImagePart):
+                    images.append((basename(img_part.partname), img_part.blob))
+
+        if not images:
+            return
+
+        source_path = Path(word_path).resolve()
+        output_root = Path(img_path)
+        preferred_dir = output_root / source_path.stem
+        source_key = os.path.normcase(str(source_path)).encode('utf-8')
+        conflict_dir = output_root / f'{source_path.stem}-{hashlib.sha256(source_key).hexdigest()[:12]}'
+
+        if conflict_dir.exists():
+            output_dir = conflict_dir
+        elif preferred_dir.exists() and any(
+            (preferred_dir / name).exists() and (preferred_dir / name).read_bytes() != blob
+            for name, blob in images
+        ):
+            output_dir = conflict_dir
+        else:
+            output_dir = preferred_dir
+
+        mkdir(output_dir)
+        for name, blob in images:
+            save_path = join(output_dir, name)
+            with open(save_path, "wb") as img_file:
+                img_file.write(blob)
